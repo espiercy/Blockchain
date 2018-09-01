@@ -1,5 +1,10 @@
 #init globals
-blockchain = []
+genesis_block = {
+    'previous_hash': '',
+    'index': 0,
+    'transactions': []
+}
+blockchain = [genesis_block]
 open_transactions = []
 
 owner = 'Evan'
@@ -14,7 +19,7 @@ def get_last_blockchain_value():
 
 
 def add_transaction(recipient, sender=owner, amount=1.0):
-    """ Append latest value to previous block and push to blockchain
+    """ Append latest value to previous block and push to open_blockchain
     
     Arguments:
        sender: sender of coins
@@ -22,7 +27,8 @@ def add_transaction(recipient, sender=owner, amount=1.0):
        amount: count of coins 
     
     """
-    transaction = {'sender': sender,
+    transaction = {
+        'sender': sender,
         'recipient': recipient,
         'amount': amount
     }
@@ -30,7 +36,18 @@ def add_transaction(recipient, sender=owner, amount=1.0):
 
 
 def mine_block():
-    pass
+    last_block = blockchain[-1]
+    hashed_block = '-'.join([str(last_block[key]) for key in last_block])
+    print(hashed_block)
+    for key in last_block:
+        value = last_block[key]
+        hashed_block = hashed_block + str(value)
+    block = {'previous_hash': 'XYZ',
+        'index': len(blockchain),
+        'transactions': open_transactions
+    }
+    
+    blockchain.append(block)
 
 
 def get_transaction_value():
@@ -45,7 +62,7 @@ def get_transaction_value():
 def get_user_choice():
     """ Get user's option to proceed """
     print('Please choose an option: ')
-    return input('1: Add new transaction value\n2: Print blockchain\nh: Manipulate the chain\nq: Quit\nChoice: ')
+    return input('1: Add new transaction value\n2: Mine a new block\n3: Print blockchain\nh: Manipulate the chain\nq: Quit\nChoice: ')
 
 
 def print_blockchain():
@@ -61,7 +78,6 @@ def verify_chain():
     is_valid = True
     for block_index in range(len(blockchain)):
         if block_index == 0:
-            block_index += 1
             continue
         elif blockchain[block_index][0] == blockchain[block_index - 1]:
             is_valid = True
@@ -91,6 +107,8 @@ while waiting_for_input:
         add_transaction(recipient, amount=amount)
         print(open_transactions)
     elif choice == '2':
+        mine_block()
+    elif choice == '3':
         print_blockchain()
     elif choice == 'h':
         blockchain[0] = [2]
@@ -98,10 +116,10 @@ while waiting_for_input:
         waiting_for_input = False
     else:
         print('Invalid choice! Choose again.')
-    if not verify_chain():
-        print_blockchain()
-        print('Invalid blockchain')
-        break
+    #if not verify_chain():
+    #    print_blockchain()
+    #    print('Invalid blockchain')
+    #    break
     print()
 else:
     print('User done!')

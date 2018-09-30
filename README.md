@@ -1,2 +1,2 @@
 # Blockchain
-Startup blockchain application
+Startup blockchain application - from Academind. Fun stuff.
